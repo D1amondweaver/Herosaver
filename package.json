@@ -25,6 +25,13 @@
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4",
+    "pre-commit": "^1.2.2",
     "standard": "^14.3.4"
+  },
+  "pre-commit": ["lint", "build"],
+  "standard": {
+  "ignore": [
+    "/dist/**/*.js"
+    ]
   }
 }
