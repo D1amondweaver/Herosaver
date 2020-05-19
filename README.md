@@ -32,7 +32,7 @@ g().then(() => saveStl(2))
 You can run `npm start` to run a local watching dev-server, so you test the code on real site, and reload changes. Use this code to test in developer console:
 
 ```js
-// code-loader, like above
+// code-loader, like above, set this up once
 g = u => fetch(u || 'http://localhost:1234/herosaver.js').then(r => r.text()).then(eval)
 
 // get JSON of scene
