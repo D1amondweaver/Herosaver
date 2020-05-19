@@ -12,8 +12,8 @@ This is based on some ideas from [TeaWithLucas](https://github.com/TeaWithLucas)
 
 You can drag these to your bookmarks:
 
-- [Export Hero as STL](javascript:(() => fetch('https://raw.githubusercontent.com/notnullgames/Herosaver/master/dist/herosaver.js').then(r => r.text()).then(eval).then(() => saveStl()))())
-- [Export Hero as OBJ](javascript:(() => fetch('https://raw.githubusercontent.com/notnullgames/Herosaver/master/dist/herosaver.js').then(r => r.text()).then(eval).then(() => saveObj()))())
+- [Hero STL](javascript:(() => fetch('https://raw.githubusercontent.com/notnullgames/Herosaver/master/dist/herosaver.js').then(r => r.text()).then(eval).then(() => saveStl()))())
+- [Hero OBJ](javascript:(() => fetch('https://raw.githubusercontent.com/notnullgames/Herosaver/master/dist/herosaver.js').then(r => r.text()).then(eval).then(() => saveObj()))())
 
 
 ### Browser Console
