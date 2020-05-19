@@ -44,5 +44,6 @@ g().then(() => saveStl())
 
 ### todo
 
+- fix missing face
 - add greasemonkey support back
 - add bookmarklet
