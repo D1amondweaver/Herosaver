@@ -6,9 +6,6 @@ Please **Always** think about the **developers** of such websites and try to **s
 
 This is based on some ideas from [TeaWithLucas](https://github.com/TeaWithLucas), with a focus on making UI lighter & code simpler. I modernized the code a bit (`class`, `let`, `const`, arrow-fucntions, etc) and got rid of the inline UI (I like it better as a bookmarklet.)
 
-## Usage
-
-Learn more about how to use this, [here](https://reformagus.github.io/Herosaver/)
 
 ## Tampermonkey
 
@@ -18,7 +15,7 @@ If you prefer a userscript over the bookmarklet, install [Tampermonkey](https://
 
 With Tampermonkey installed, click the link below. Tampermonkey will detect the `.user.js` file and open its install screen automatically:
 
-**[➜ Install Herosaver userscript](https://raw.githubusercontent.com/reformagus/Herosaver/master/dist/herosaver.user.js)**
+**[➜ Install Herosaver userscript](https://raw.githubusercontent.com/mungeondaster/Herosaver/master/dist/herosaver.user.js)**
 
 By default it runs on every site (`@match *://*/*`). After installing, you can edit the `@match` line in the Tampermonkey dashboard to restrict it to the site(s) you use.
 
