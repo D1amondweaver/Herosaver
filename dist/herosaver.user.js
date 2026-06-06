@@ -1,21 +1,21 @@
 // ==UserScript==
 // @name         Herosaver
-// @namespace    https://github.com/reformagus/Herosaver
+// @namespace    https://github.com/mungeondaster/Herosaver
 // @version      1.0.0
 // @description  Save Configuration and STLs from websites using the THREE.JS framework
 // @author       reformagus
-// @homepageURL  https://github.com/reformagus/Herosaver
+// @homepageURL  https://github.com/mungeondaster/Herosaver
 // @match        *://*/*
 // @grant        GM_registerMenuCommand
 // @run-at       document-idle
-// @downloadURL  https://raw.githubusercontent.com/reformagus/Herosaver/master/dist/herosaver.user.js
-// @updateURL    https://raw.githubusercontent.com/reformagus/Herosaver/master/dist/herosaver.user.js
+// @downloadURL  https://raw.githubusercontent.com/mungeondaster/Herosaver/master/dist/herosaver.user.js
+// @updateURL    https://raw.githubusercontent.com/mungeondaster/Herosaver/master/dist/herosaver.user.js
 // ==/UserScript==
 
 (function () {
   'use strict'
 
-  const SRC = 'https://raw.githubusercontent.com/reformagus/Herosaver/master/dist/herosaver.js'
+  const SRC = 'https://raw.githubusercontent.com/mungeondaster/Herosaver/master/dist/herosaver.js'
 
   // Inject into the page context so the loaded code can reach window.CK, THREE, etc.
   const run = (fn) => {
