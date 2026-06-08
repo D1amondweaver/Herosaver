@@ -382,6 +382,9 @@ header p { font-size: 0.75rem; color: #6b7280; }
     </div>
 
     <div class="sidebar-footer">
+      <div id="herosaver-badge" style="display:none; background:#1e3a5f; border:1px solid #2563eb; border-radius:6px; padding:6px 10px; font-size:0.72rem; color:#93c5fd; text-align:center;">
+        ✦ Model received from Herosaver
+      </div>
       <button class="btn btn-secondary" id="resetBtn" style="display:none">Load Different File</button>
       <button class="btn btn-primary" id="exportBtn" disabled>Export Hero STL</button>
     </div>
@@ -1113,6 +1116,7 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('componentsSection').style.display = 'none';
   document.getElementById('singleMeshWarning').style.display = 'none';
   document.getElementById('subdivSection').style.display = 'none';
+  document.getElementById('herosaver-badge').style.display = 'none';
   document.getElementById('subdivEnabled').checked = false;
   document.getElementById('subdivControls').style.display = 'none';
   document.getElementById('exportBtn').disabled = true;
@@ -1142,6 +1146,33 @@ document.addEventListener('drop', e => {
     setStatus('Please drop an STL file (.stl)');
   }
 });
+
+// ─── Herosaver Integration ────────────────────────────────────────────────────
+
+window.addEventListener('message', function (e) {
+  if (!e.data || e.data.type !== 'herosaver-stl') return;
+
+  // Acknowledge immediately so Herosaver stops retrying
+  try { e.source.postMessage({ type: 'herosaver-ack' }, '*'); } catch (_) {}
+
+  const buffer = new Uint8Array(e.data.data).buffer;
+  const filename = e.data.filename || 'heroforge_model.stl';
+
+  // Show Herosaver badge
+  document.getElementById('herosaver-badge').style.display = '';
+
+  setStatus('Receiving model from Herosaver…');
+  processFile({ name: filename, arrayBuffer: () => Promise.resolve(buffer) });
+});
+
+// If opened by Herosaver, replace the idle overlay with a waiting message
+if (window.opener) {
+  const ov = document.getElementById('overlay');
+  if (ov) {
+    ov.querySelector('.ov-icon').textContent = '✦';
+    ov.querySelector('p').textContent = 'Waiting for model from Herosaver…';
+  }
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
