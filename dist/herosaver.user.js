@@ -1,24 +1,24 @@
 // ==UserScript==
 // @name         Herosaver
-// @namespace    https://github.com/mungeondaster/Herosaver
+// @namespace    https://github.com/reformagus/Herosaver
 // @version      1.1.0
 // @description  Save Configuration and STLs from websites using the THREE.JS framework
 // @author       reformagus
-// @homepageURL  https://github.com/mungeondaster/Herosaver
+// @homepageURL  https://github.com/reformagus/Herosaver
 // @match        *://*/*
 // @grant        GM_registerMenuCommand
 // @run-at       document-idle
-// @downloadURL  https://raw.githubusercontent.com/mungeondaster/Herosaver/master/dist/herosaver.user.js
-// @updateURL    https://raw.githubusercontent.com/mungeondaster/Herosaver/master/dist/herosaver.user.js
+// @downloadURL  https://raw.githubusercontent.com/reformagus/Herosaver/master/dist/herosaver.user.js
+// @updateURL    https://raw.githubusercontent.com/reformagus/Herosaver/master/dist/herosaver.user.js
 // ==/UserScript==
 
 (function () {
   'use strict'
 
-  const SRC = 'https://raw.githubusercontent.com/mungeondaster/Herosaver/master/dist/herosaver.js'
+  const SRC = 'https://raw.githubusercontent.com/reformagus/Herosaver/master/dist/herosaver.js'
 
   // Change this to match wherever you host stl-cube-remover.html
-  const HERO_CLEANER_URL = 'https://mungeondaster.github.io/Herosaver/stl-cube-remover.html'
+  const HERO_CLEANER_URL = 'https://reformagus.github.io/Herosaver/stl-cube-remover.html'
 
   // Inject into the page context so the loaded code can reach window.CK, THREE, etc.
   const run = (fn) => {
