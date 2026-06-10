@@ -2,6 +2,27 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.3.0]
+
+### Changed
+- "Save STL" (both the on-page button and the Tampermonkey menu command) now
+  performs the cube-removing export. The separate "Save Clean STL" action was
+  removed and folded into "Save STL", since exporting without the wrapping cube
+  is the expected default. The raw export is still available as `window.saveStl`.
+- Cube detection rewritten: the HeroForge wrapping cube is now found by the huge
+  bounding-box volume gap between it and the real body shells, instead of the
+  "cube score" heuristic. After the export rotation and skin baking the cube is
+  skewed, so its cube score fell below the old threshold and it was missed while
+  a real body shell was removed by mistake. The volume-gap approach removes only
+  the oversized enclosing shell and keeps the figure intact.
+
+### Added
+- The userscript now removes any foreign on-page button labelled exactly
+  "Save STL" that it did not create, leaving only the Herosaver panel button.
+- `window.heroMeshes()` debug helper that lists every mesh in the character
+  (name, type, visibility, vertex count, bounding-box size). Cube removal also
+  logs each detected shell to the console for inspection.
+
 ## [1.2.0]
 
 ### Added

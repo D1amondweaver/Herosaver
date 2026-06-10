@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Herosaver
 // @namespace    https://github.com/reformagus/Herosaver
-// @version      1.2.0
+// @version      1.3.0
 // @description  Save Configuration and STLs from websites using the THREE.JS framework
 // @author       reformagus
 // @homepageURL  https://github.com/reformagus/Herosaver
@@ -26,16 +26,28 @@
   }
 
   // ─── Tampermonkey menu commands ───────────────────────────────────────────
-  GM_registerMenuCommand('Herosaver: Save STL', () => run('saveStl'))
-  GM_registerMenuCommand('Herosaver: Save Clean STL', () => run('saveCleanStl'))
+  // "Save STL" exports the model with the surrounding cube/shell automatically
+  // removed (cube removal runs locally in the bundle, no external page needed).
+  GM_registerMenuCommand('Herosaver: Save STL', () => run('saveCleanStl'))
   GM_registerMenuCommand('Herosaver: Save OBJ', () => run('saveObj'))
   GM_registerMenuCommand('Herosaver: Save JSON', () => run('saveJson'))
 
+  // ─── Remove any foreign "Save STL" button ─────────────────────────────────
+  // Drop any other on-page control labelled exactly "Save STL" that this script
+  // did not create (e.g. a leftover button from another tool), so only the
+  // Herosaver panel button remains.
+  function removeForeignSaveStlButtons () {
+    const panel = document.getElementById('herosaver-panel')
+    document.querySelectorAll('button, a, [role="button"], input[type="button"], input[type="submit"]').forEach(el => {
+      if (panel && panel.contains(el)) return
+      const label = (el.textContent || el.value || '').trim()
+      if (label === 'Save STL') el.remove()
+    })
+  }
+
   // ─── On-page button panel ─────────────────────────────────────────────────
   // A small floating panel with the same actions, so they are reachable without
-  // opening the userscript-manager menu. "Save Clean STL" exports the model with
-  // the surrounding cube/shell automatically removed (done locally in the bundle,
-  // no external page required).
+  // opening the userscript-manager menu.
   function injectPanel () {
     if (document.getElementById('herosaver-panel')) return
 
@@ -66,14 +78,21 @@
       return b
     }
 
-    panel.appendChild(makeBtn('Save STL', 'saveStl', true))
-    panel.appendChild(makeBtn('Save Clean STL', 'saveCleanStl', true))
+    // "Save STL" runs the cube-removing export (saveCleanStl).
+    panel.appendChild(makeBtn('Save STL', 'saveCleanStl', true))
     panel.appendChild(makeBtn('Save OBJ', 'saveObj', false))
     panel.appendChild(makeBtn('Save JSON', 'saveJson', false))
 
     document.body.appendChild(panel)
   }
 
-  if (document.body) injectPanel()
-  else window.addEventListener('DOMContentLoaded', injectPanel)
+  function init () {
+    injectPanel()
+    // Sweep now and a few more times, since a foreign button may render late.
+    removeForeignSaveStlButtons()
+    ;[1000, 2500, 5000].forEach(ms => setTimeout(removeForeignSaveStlButtons, ms))
+  }
+
+  if (document.body) init()
+  else window.addEventListener('DOMContentLoaded', init)
 })()
