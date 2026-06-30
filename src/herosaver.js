@@ -145,24 +145,62 @@ window.saveObj = subdivisions => {
 }
 
 
-// Collect all unique textures from the character's materials and download them.
-// Each texture is drawn to a canvas and saved as a PNG.
+// pulls the colorBake atlases from the webgl renderer
+// Each atlas is drawn to a canvas and saved as a PNG.
 window.saveTextures = () => {
+  const renderer = window.CK.renderManager.renderer
   const seen = new Set()
-  let count = 0
-  let colorTex = null
 
-character.traverse(mesh => {
-  const mats = Array.isArray(mesh.material)
-    ? mesh.material
-    : [mesh.material]
+  const saveTarget = (name, target) => {
+    if (!target || !target.texture || seen.has(target.texture.uuid)) return
+    seen.add(target.texture.uuid)
 
-  mats.forEach(mat => {
-    const tex = mat?.uniforms?.colorAtlasMap?.value
-    if (tex) colorTex = tex
-  })
-})
+    const w = target.width
+    const h = target.height
 
-console.log(colorTex)
-console.log(window.CK.renderManager.renderer.properties.get(colorTex))
+    const pixels = new Uint8Array(w * h * 4)
+
+    renderer.readRenderTargetPixels(
+      target,
+      0,
+      0,
+      w,
+      h,
+      pixels
+    )
+
+    const canvas = document.createElement('canvas')
+    canvas.width = w
+    canvas.height = h
+
+    const ctx = canvas.getContext('2d')
+    const data = ctx.createImageData(w, h)
+
+    data.data.set(pixels)
+    ctx.putImageData(data, 0, 0)
+
+    canvas.toBlob(blob => {
+      if (blob) {
+        saveAs(blob, `${getName()}_${name}.png`)
+      }
+    }, 'image/png')
+  }
+
+
+  const bake = window.CK.scene.children[0]
+    .children[3]
+    ._partLightGroup
+    .parent
+    .colorBake
+
+
+  saveTarget(
+    "colorAtlas",
+    bake.targetsRGBA.color
+  )
+
+  saveTarget(
+    "emissiveAtlas",
+    bake.targetsRGBA.emissive
+  )
 }
