@@ -8,14 +8,14 @@
 // @match        *://*.heroforge.com/*
 // @grant        GM_registerMenuCommand
 // @run-at       document-idle
-// @downloadURL  https://raw.githubusercontent.com/D1amondweaver/Herosaver/master/dist/herosaver.user.js
-// @updateURL    https://raw.githubusercontent.com/D1amondweaver/Herosaver/master/dist/herosaver.user.js
+// @downloadURL  https://raw.githubusercontent.com/D1amondweaver/Herosaver/blob/D1amondweaver-patch-UVCoords/dist/herosaver.js
+// @updateURL    https://raw.githubusercontent.com/D1amondweaver/Herosaver/blob/D1amondweaver-patch-UVCoords/dist/herosaver.js
 // ==/UserScript==
 
 (function () {
   'use strict'
 
-  const SRC = 'https://raw.githubusercontent.com/D1amondweaver/Herosaver/master/dist/herosaver.js'
+  const SRC = 'https://raw.githubusercontent.com/D1amondweaver/Herosaver/blob/D1amondweaver-patch-UVCoords/dist/herosaver.js'
 
   // Inject into the page context so the loaded code can reach window.CK, THREE, etc.
   // A cache-busting query is appended so the freshest published bundle always
