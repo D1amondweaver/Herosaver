@@ -154,11 +154,19 @@ window.saveTextures = () => {
   character.traverse(mesh => {
     if (!mesh.material?.uniforms?.colorAtlasMap) return;
 
-    const tex = mesh.material.uniforms.colorAtlasMap.value;
+   let colorTex = null
 
-    console.log(tex);
-    console.log("constructor:", tex.constructor.name);
-    console.log("image:", tex.image);
-    console.log("source:", tex.source);
-});
+character.traverse(mesh => {
+  const mats = Array.isArray(mesh.material)
+    ? mesh.material
+    : [mesh.material]
+
+  mats.forEach(mat => {
+    const tex = mat?.uniforms?.colorAtlasMap?.value
+    if (tex) colorTex = tex
+  })
+})
+
+console.log(colorTex)
+console.log(window.CK.renderManager.renderer.properties.get(colorTex))
 }
