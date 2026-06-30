@@ -199,8 +199,11 @@ window.saveTextures = () => {
     bake.targetsRGBA.color
   )
 
-  saveTarget(
+ /* Doesn't seem to produce emissive atlas even when character has glowing textures
+
+ saveTarget(
     "emissiveAtlas",
     bake.targetsRGBA.emissive
   )
+  */
 }
