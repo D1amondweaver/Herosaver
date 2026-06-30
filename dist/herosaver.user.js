@@ -84,6 +84,7 @@
     panel.appendChild(makeBtn('Save STL', 'saveCleanStl', true))
     panel.appendChild(makeBtn('Save OBJ', 'saveObj', false))
     panel.appendChild(makeBtn('Save JSON', 'saveJson', false))
+    panel.appendChild(makeBTN('Save Textures', () => saveTextures())
 
     document.body.appendChild(panel)
   }
