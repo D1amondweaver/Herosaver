@@ -150,11 +150,7 @@ window.saveObj = subdivisions => {
 window.saveTextures = () => {
   const seen = new Set()
   let count = 0
-
-  character.traverse(mesh => {
-    if (!mesh.material?.uniforms?.colorAtlasMap) return;
-
-   let colorTex = null
+  let colorTex = null
 
 character.traverse(mesh => {
   const mats = Array.isArray(mesh.material)
