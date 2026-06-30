@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Herosaver
+// @name         HerosaverTEST
 // @namespace    https://github.com/reformagus/Herosaver
 // @version      1.3.2
 // @description  Save Configuration and STLs from websites using the THREE.JS framework
@@ -33,6 +33,7 @@
   GM_registerMenuCommand('Herosaver: Save STL', () => run('saveCleanStl'))
   GM_registerMenuCommand('Herosaver: Save OBJ', () => run('saveObj'))
   GM_registerMenuCommand('Herosaver: Save JSON', () => run('saveJson'))
+  GM_registerMenuCommand('Herosaver: Save Textures', () => run('saveTextures'))
 
   // ─── Remove any foreign "Save STL" button ─────────────────────────────────
   // Drop any other on-page control labelled exactly "Save STL" that this script
@@ -83,8 +84,8 @@
     // "Save STL" runs the cube-removing export (saveCleanStl).
     panel.appendChild(makeBtn('Save STL', 'saveCleanStl', true))
     panel.appendChild(makeBtn('Save OBJ', 'saveObj', false))
+    panel.appendChild(makeBtn('Save Textures', 'saveTextures', false))
     panel.appendChild(makeBtn('Save JSON', 'saveJson', false))
-    panel.appendChild(makeBTN('Save Textures', () => saveTextures())
 
     document.body.appendChild(panel)
   }
