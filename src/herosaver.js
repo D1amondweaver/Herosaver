@@ -158,22 +158,20 @@ window.saveTextures = () => {
         ? mesh.material
         : [mesh.material];
 
-    mats.forEach(mat => {
-        console.log(mesh.name);
-        console.log(mat);
+    for (const mat of mats) {
+        if (!mat.uniforms) continue;
 
-        [
-            "map",
-            "normalMap",
-            "roughnessMap",
-            "metalnessMap",
-            "aoMap",
-            "emissiveMap"
-        ].forEach(slot => {
-            if (mat[slot]) {
-                console.log(slot, mat[slot]);
+        console.log("Material:", mesh.name);
+
+        for (const [name, uniform] of Object.entries(mat.uniforms)) {
+            const value = uniform.value;
+
+            if (value && typeof value === "object") {
+                console.log(name, value);
             }
-        });
-    });
+        }
+
+        return;
+    }
 });
 }
