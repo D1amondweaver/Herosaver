@@ -152,36 +152,30 @@ window.saveTextures = () => {
   let count = 0
 
   character.traverse(mesh => {
-    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
-    materials.forEach(mat => {
-      if (!mat) return
+    if (!mesh.material) return;
 
-      // Check common texture slots
-      const slots = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'aoMap']
-      slots.forEach(slot => {
-        const tex = mat[slot]
-        if (!tex || !tex.image) return
+    const mats = Array.isArray(mesh.material)
+        ? mesh.material
+        : [mesh.material];
 
-        const img = tex.image
-        // Deduplicate by image source or object reference
-        const key = img.src || img
-        if (seen.has(key)) return
-        seen.add(key)
+    mats.forEach(mat => {
+        console.log(mesh.name);
+        console.log(mat);
 
-        const canvas = document.createElement('canvas')
-        canvas.width = img.width || img.naturalWidth || 512
-        canvas.height = img.height || img.naturalHeight || 512
-        const ctx = canvas.getContext('2d')
-        ctx.drawImage(img, 0, 0)
-
-        canvas.toBlob(blob => {
-          if (blob) {
-            const name = `${getName()}_texture_${slot}_${count++}.png`
-            saveAs(blob, name)
-          }
-        }, 'image/png')
-      })
-    })
+        [
+            "map",
+            "normalMap",
+            "roughnessMap",
+            "metalnessMap",
+            "aoMap",
+            "emissiveMap"
+        ].forEach(slot => {
+            if (mat[slot]) {
+                console.log(slot, mat[slot]);
+            }
+        });
+    });
+});
   })
 
   if (count === 0) {
