@@ -176,9 +176,4 @@ window.saveTextures = () => {
         });
     });
 });
-  })
-
-  if (count === 0) {
-    console.warn('Herosaver: no textures with image data found on character materials.')
-  }
 }
