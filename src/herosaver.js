@@ -137,11 +137,71 @@ window.saveCleanStl = subdivisions => {
   saveAs(new Blob([cleaned], { type: 'application/octet-stream' }), `${getName()}_clean.stl`)
 }
 
-// export character as OBJ file with the surrounding cube/shell removed.
-// Routes through the STL triangles so it strips the exact same cube as the STL.
-window.saveObj = subdivisions => {
-  const triangles = removeCubeTriangles(parseSTL(exportSTLBuffer(subdivisions)))
-  saveAs(new Blob([exportOBJFromTriangles(triangles)], { type: 'application/octet-stream;charset=utf-8' }), `${getName()}.obj`)
+// export character as OBJ file
+// Doesn't route through the STL triangles in an attempt to preserve uv coordinates
+window.saveObj = () => {
+  const lines = []
+
+  const vertices = []
+  const uvs = []
+  const faces = []
+
+  let vertexOffset = 1
+  let uvOffset = 1
+
+  character.traverse(obj => {
+    if (!obj.isMesh) return
+
+    const geo = obj.geometry
+
+    const pos = geo.getAttribute('position')
+    const uv = geo.getAttribute('uv')
+
+    for (let i = 0; i < pos.count; i++) {
+      vertices.push(
+        `v ${pos.getX(i)} ${pos.getY(i)} ${pos.getZ(i)}`
+      )
+    }
+
+    if (uv) {
+      for (let i = 0; i < uv.count; i++) {
+        uvs.push(
+          `vt ${uv.getX(i)} ${1 - uv.getY(i)}`
+        )
+      }
+    }
+
+    const index = geo.index
+
+    if (index) {
+      for (let i = 0; i < index.count; i += 3) {
+        const a = index.getX(i) + vertexOffset
+        const b = index.getX(i+1) + vertexOffset
+        const c = index.getX(i+2) + vertexOffset
+
+        faces.push(
+          `f ${a}/${a} ${b}/${b} ${c}/${c}`
+        )
+      }
+    }
+
+    vertexOffset += pos.count
+  })
+
+  const obj =
+`mtllib ${getName()}.mtl
+
+${vertices.join('\n')}
+
+${uvs.join('\n')}
+
+${faces.join('\n')}
+`
+
+  saveAs(
+    new Blob([obj]),
+    `${getName()}.obj`
+  )
 }
 
 
