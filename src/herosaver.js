@@ -143,3 +143,48 @@ window.saveObj = subdivisions => {
   const triangles = removeCubeTriangles(parseSTL(exportSTLBuffer(subdivisions)))
   saveAs(new Blob([exportOBJFromTriangles(triangles)], { type: 'application/octet-stream;charset=utf-8' }), `${getName()}.obj`)
 }
+
+
+// Collect all unique textures from the character's materials and download them.
+// Each texture is drawn to a canvas and saved as a PNG.
+window.saveTextures = () => {
+  const seen = new Set()
+  let count = 0
+
+  character.traverse(mesh => {
+    const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+    materials.forEach(mat => {
+      if (!mat) return
+
+      // Check common texture slots
+      const slots = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'emissiveMap', 'aoMap']
+      slots.forEach(slot => {
+        const tex = mat[slot]
+        if (!tex || !tex.image) return
+
+        const img = tex.image
+        // Deduplicate by image source or object reference
+        const key = img.src || img
+        if (seen.has(key)) return
+        seen.add(key)
+
+        const canvas = document.createElement('canvas')
+        canvas.width = img.width || img.naturalWidth || 512
+        canvas.height = img.height || img.naturalHeight || 512
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0)
+
+        canvas.toBlob(blob => {
+          if (blob) {
+            const name = `${getName()}_texture_${slot}_${count++}.png`
+            saveAs(blob, name)
+          }
+        }, 'image/png')
+      })
+    })
+  })
+
+  if (count === 0) {
+    console.warn('Herosaver: no textures with image data found on character materials.')
+  }
+}
