@@ -152,26 +152,13 @@ window.saveTextures = () => {
   let count = 0
 
   character.traverse(mesh => {
-    if (!mesh.material) return;
+    if (!mesh.material?.uniforms?.colorAtlasMap) return;
 
-    const mats = Array.isArray(mesh.material)
-        ? mesh.material
-        : [mesh.material];
+    const tex = mesh.material.uniforms.colorAtlasMap.value;
 
-    for (const mat of mats) {
-        if (!mat.uniforms) continue;
-
-        console.log("Material:", mesh.name);
-
-        for (const [name, uniform] of Object.entries(mat.uniforms)) {
-            const value = uniform.value;
-
-            if (value && typeof value === "object") {
-                console.log(name, value);
-            }
-        }
-
-        return;
-    }
+    console.log(tex);
+    console.log("constructor:", tex.constructor.name);
+    console.log("image:", tex.image);
+    console.log("source:", tex.source);
 });
 }
