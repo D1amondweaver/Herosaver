@@ -5,6 +5,7 @@ import { saveAs } from 'file-saver'
 import { character, getName, process } from './utils'
 import { parseSTL, removeCubeTriangles, removeCubeFromSTL } from './cube-remover'
 import { exportOBJFromTriangles } from './obj-exporter'
+import * as THREE from 'three'
 
 // Export the character to a binary STL ArrayBuffer (the common starting point
 // for the STL/OBJ exports and the cube removal that both share).
@@ -139,15 +140,18 @@ window.saveCleanStl = subdivisions => {
 
 // export character as OBJ file
 // Doesn't route through the STL triangles in an attempt to preserve uv coordinates
+// also exports MTL with UVs and reference to texture atlas
 window.saveObj = () => {
-  const lines = []
+  const objLines = []
+  const mtlLines = []
 
   const vertices = []
   const uvs = []
   const faces = []
 
   let vertexOffset = 1
-  let uvOffset = 1
+
+  character.updateMatrixWorld(true)
 
   character.traverse(obj => {
     if (!obj.isMesh) return
@@ -157,14 +161,29 @@ window.saveObj = () => {
     const pos = geo.getAttribute('position')
     const uv = geo.getAttribute('uv')
 
+    if (!pos) return
+
+    // Apply world transform (important for posed characters)
+    const matrix = obj.matrixWorld
+
     for (let i = 0; i < pos.count; i++) {
+      const v = new THREE.Vector3(
+        pos.getX(i),
+        pos.getY(i),
+        pos.getZ(i)
+      )
+
+      v.applyMatrix4(matrix)
+
       vertices.push(
-        `v ${pos.getX(i)} ${pos.getY(i)} ${pos.getZ(i)}`
+        `v ${v.x} ${v.y} ${v.z}`
       )
     }
 
+    // UV coordinates
     if (uv) {
       for (let i = 0; i < uv.count; i++) {
+        // OBJ UVs are flipped vertically compared to WebGL
         uvs.push(
           `vt ${uv.getX(i)} ${1 - uv.getY(i)}`
         )
@@ -176,8 +195,18 @@ window.saveObj = () => {
     if (index) {
       for (let i = 0; i < index.count; i += 3) {
         const a = index.getX(i) + vertexOffset
-        const b = index.getX(i+1) + vertexOffset
-        const c = index.getX(i+2) + vertexOffset
+        const b = index.getX(i + 1) + vertexOffset
+        const c = index.getX(i + 2) + vertexOffset
+
+        faces.push(
+          `f ${a}/${a} ${b}/${b} ${c}/${c}`
+        )
+      }
+    } else {
+      for (let i = 0; i < pos.count; i += 3) {
+        const a = i + vertexOffset
+        const b = i + 1 + vertexOffset
+        const c = i + 2 + vertexOffset
 
         faces.push(
           `f ${a}/${a} ${b}/${b} ${c}/${c}`
@@ -188,19 +217,49 @@ window.saveObj = () => {
     vertexOffset += pos.count
   })
 
-  const obj =
-`mtllib ${getName()}.mtl
 
-${vertices.join('\n')}
+  // OBJ file
+  objLines.push(
+    `mtllib ${getName()}.mtl`,
+    `usemtl HeroMaterial`,
+    '',
+    ...vertices,
+    '',
+    ...uvs,
+    '',
+    ...faces
+  )
 
-${uvs.join('\n')}
 
-${faces.join('\n')}
-`
+  // MTL file
+  mtlLines.push(
+    'newmtl HeroMaterial',
+    'Ka 1.0 1.0 1.0',
+    'Kd 1.0 1.0 1.0',
+    'Ks 0.0 0.0 0.0',
+    'd 1.0',
+    'illum 1',
+    `map_Kd ${getName()}_colorAtlas.png`
+  )
 
+
+  // Save OBJ
   saveAs(
-    new Blob([obj]),
+    new Blob(
+      [objLines.join('\n')],
+      { type: 'text/plain' }
+    ),
     `${getName()}.obj`
+  )
+
+
+  // Save MTL
+  saveAs(
+    new Blob(
+      [mtlLines.join('\n')],
+      { type: 'text/plain' }
+    ),
+    `${getName()}.mtl`
   )
 }
 
