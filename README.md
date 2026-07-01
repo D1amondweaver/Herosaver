@@ -25,7 +25,4 @@ Alternatively, open the Tampermonkey dashboard, click **Create a new script**, a
 
 ### Usage
 
-Go to the target page and use either the on-page Herosaver panel (bottom-right) or the Tampermonkey menu in the toolbar, then click **Save STL**, **Save Clean STL**, **Save OBJ** or **Save JSON**.
-
-**Save Clean STL** exports the model with the surrounding cube/shell automatically removed. The cube removal runs locally on the exported STL, so no external page is required.  
-*Note* - the cube shell is only stripped from the re-exported STL; it is not removed from the live web app preview.
+Go to the target page and use either the on-page Herosaver panel (bottom-right) or the Tampermonkey menu in the toolbar, then click **Save STL**, **Save OBJ and Textures**, or **Save JSON**.
