@@ -31,9 +31,8 @@
   // "Save STL" exports the model with the surrounding cube/shell automatically
   // removed (cube removal runs locally in the bundle, no external page needed).
   GM_registerMenuCommand('Herosaver: Save STL', () => run('saveCleanStl'))
-  GM_registerMenuCommand('Herosaver: Save OBJ', () => run('saveObj'))
+  GM_registerMenuCommand('Herosaver: Save OBJ and Textures', () => run('saveObj'))
   GM_registerMenuCommand('Herosaver: Save JSON', () => run('saveJson'))
-  GM_registerMenuCommand('Herosaver: Save Textures', () => run('saveTextures'))
 
   // ─── Remove any foreign "Save STL" button ─────────────────────────────────
   // Drop any other on-page control labelled exactly "Save STL" that this script
@@ -83,8 +82,7 @@
 
     // "Save STL" runs the cube-removing export (saveCleanStl).
     panel.appendChild(makeBtn('Save STL', 'saveCleanStl', true))
-    panel.appendChild(makeBtn('Save OBJ', 'saveObj', false))
-    panel.appendChild(makeBtn('Save Textures', 'saveTextures', false))
+    panel.appendChild(makeBtn('Save OBJ and Textures', 'saveObj', false))
     panel.appendChild(makeBtn('Save JSON', 'saveJson', false))
 
     document.body.appendChild(panel)
