@@ -4,7 +4,7 @@ Methodology to Save Configuration and STLs from websites using the THREE.JS fram
 
 Please **Always** think about the **developers** of such websites and try to **support them whenever possible**, as without them, there would be no such tools.
 
-This is based on some ideas from [TeaWithLucas](https://github.com/TeaWithLucas), and refined by [reformagus](https://github.com/reformagus/Herosaver) and [D1amondweaver](https://github.com/D1amondweaver/Herosaver/UVCoords)
+This is based on some ideas from [TeaWithLucas](https://github.com/TeaWithLucas), and refined by [reformagus](https://github.com/reformagus/Herosaver) and [D1amondweaver](https://github.com/D1amondweaver/Herosaver/tree/UVCoords)
 
 
 ## Tampermonkey
