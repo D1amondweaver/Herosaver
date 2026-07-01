@@ -143,6 +143,7 @@ window.saveCleanStl = subdivisions => {
 // Doesn't route through the STL triangles in an attempt to preserve uv coordinates
 // also exports MTL with UVs and reference to texture atlas
 window.saveObj = () => {
+  window.saveTextures()
   const vertices = []
   const uvs = []
   const faces = []
