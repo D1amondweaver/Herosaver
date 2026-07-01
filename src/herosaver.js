@@ -141,8 +141,6 @@ window.saveCleanStl = subdivisions => {
 // Doesn't route through the STL triangles in an attempt to preserve uv coordinates
 // also exports MTL with UVs and reference to texture atlas
 window.saveObj = () => {
-  const lines = []
-
   const vertices = []
   const uvs = []
   const faces = []
@@ -154,21 +152,16 @@ window.saveObj = () => {
     if (!obj.isMesh) return
 
     const geo = obj.geometry
-
     const pos = geo.getAttribute('position')
     const uv = geo.getAttribute('uv')
 
     for (let i = 0; i < pos.count; i++) {
-      vertices.push(
-        `v ${pos.getX(i)} ${pos.getY(i)} ${pos.getZ(i)}`
-      )
+      vertices.push(`v ${pos.getX(i)} ${pos.getY(i)} ${pos.getZ(i)}`)
     }
 
     if (uv) {
       for (let i = 0; i < uv.count; i++) {
-        uvs.push(
-          `vt ${uv.getX(i)} ${1 - uv.getY(i)}`
-        )
+        uvs.push(`vt ${uv.getX(i)} ${1 - uv.getY(i)}`)
       }
     }
 
@@ -176,17 +169,27 @@ window.saveObj = () => {
 
     if (index) {
       for (let i = 0; i < index.count; i += 3) {
-        const a = index.getX(i) + vertexOffset
-        const b = index.getX(i+1) + vertexOffset
-        const c = index.getX(i+2) + vertexOffset
+        const ai = index.getX(i)
+        const bi = index.getX(i + 1)
+        const ci = index.getX(i + 2)
 
-        faces.push(
-          `f ${a}/${a} ${b}/${b} ${c}/${c}`
-        )
+        const av = ai + vertexOffset
+        const bv = bi + vertexOffset
+        const cv = ci + vertexOffset
+
+        if (uv) {
+          const at = ai + uvOffset
+          const bt = bi + uvOffset
+          const ct = ci + uvOffset
+          faces.push(`f ${av}/${at} ${bv}/${bt} ${cv}/${ct}`)
+        } else {
+          faces.push(`f ${av} ${bv} ${cv}`)
+        }
       }
     }
 
     vertexOffset += pos.count
+    if (uv) uvOffset += uv.count
   })
 
   const obj =
@@ -196,29 +199,23 @@ ${vertices.join('\n')}
 
 ${uvs.join('\n')}
 
+usemtl HeroMaterial
 ${faces.join('\n')}
 `
 
-  saveAs(
-    new Blob([obj]),
-    `${getName()}.obj`
-  )
-  
-  // Save MTL file
-const mtl = [
-  'newmtl HeroMaterial',
-  'Ka 1.0 1.0 1.0',
-  'Kd 1.0 1.0 1.0',
-  'Ks 0.0 0.0 0.0',
-  'd 1.0',
-  'illum 1',
-  `map_Kd ${getName()}_colorAtlas.png`
-].join('\n')
+  saveAs(new Blob([obj]), `${getName()}.obj`)
 
-saveAs(
-  new Blob([mtl], { type: 'text/plain' }),
-  `${getName()}.mtl`
-)
+  const mtl = [
+    'newmtl HeroMaterial',
+    'Ka 1.0 1.0 1.0',
+    'Kd 1.0 1.0 1.0',
+    'Ks 0.0 0.0 0.0',
+    'd 1.0',
+    'illum 1',
+    `map_Kd ${getName()}_colorAtlas.png`
+  ].join('\n')
+
+  saveAs(new Blob([mtl], { type: 'text/plain' }), `${getName()}.mtl`)
 }
 
 
