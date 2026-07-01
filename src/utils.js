@@ -42,7 +42,7 @@ const mirror = (geometry) => {
 //
 // getBoneMatrix(i) == boneWorld[i] * boneInverse[i], read from skeleton.boneTexture.
 // Only skin0/skin1/skin2 are read by the shader (6 influences); skin3 is ignored.
-const bakeSkinnedVertex = (() => {
+export const bakeSkinnedVertex = (() => {
   const tempMatrix = new Matrix4()
   const tempVec = new Vector3()
 
