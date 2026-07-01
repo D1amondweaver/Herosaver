@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         HerosaverTEST
+// @name         Herosaver
 // @namespace    https://github.com/D1amondweaver/Herosaver
 // @version      1.3.2
 // @description  Save Configuration and STLs from websites using the THREE.JS framework
-// @author       reformagus
+// @author       reformagus&D1amondweaver
 // @homepageURL  https://github.com/D1amondweaver/Herosaver
 // @match        *://*.heroforge.com/*
 // @grant        GM_registerMenuCommand
