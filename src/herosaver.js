@@ -1,8 +1,9 @@
 /* global Blob */
 
+import { Matrix4, Vector3 } from 'three'
 import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js'
 import { saveAs } from 'file-saver'
-import { character, getName, process } from './utils'
+import { character, getName, process, bakeSkinnedVertex } from './utils'
 import { parseSTL, removeCubeTriangles, removeCubeFromSTL } from './cube-remover'
 import { exportOBJFromTriangles } from './obj-exporter'
 
@@ -137,6 +138,7 @@ window.saveCleanStl = subdivisions => {
   saveAs(new Blob([cleaned], { type: 'application/octet-stream' }), `${getName()}_clean.stl`)
 }
 
+
 // export character as OBJ file
 // Doesn't route through the STL triangles in an attempt to preserve uv coordinates
 // also exports MTL with UVs and reference to texture atlas
@@ -148,20 +150,45 @@ window.saveObj = () => {
   let vertexOffset = 1
   let uvOffset = 1
 
+  // Same coordinate transform used by process() for STL/OBJ: rotate 90° on X, scale ×10
+  const mrot = new Matrix4().makeRotationX(90 * Math.PI / 180)
+  const msca = new Matrix4().makeScale(10, 10, 10)
+  const mTransform = new Matrix4().multiplyMatrices(msca, mrot)
+
+  character.updateMatrixWorld(true)
+
   character.traverse(obj => {
     if (!obj.isMesh) return
 
     const geo = obj.geometry
     const pos = geo.getAttribute('position')
     const uv = geo.getAttribute('uv')
+    const isSkinned = obj.isSkinnedMesh || (obj.skeleton && obj.skeleton.bones && obj.skeleton.bones.length > 0)
 
     for (let i = 0; i < pos.count; i++) {
-      vertices.push(`v ${pos.getX(i)} ${pos.getY(i)} ${pos.getZ(i)}`)
+      const v = isSkinned
+        ? bakeSkinnedVertex(obj, i).applyMatrix4(obj.matrixWorld)
+        : new Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)).applyMatrix4(obj.matrixWorld)
+      v.applyMatrix4(mTransform)
+      vertices.push(`v ${v.x} ${v.y} ${v.z}`)
     }
 
     if (uv) {
+      // Remap this part's local 0-1 UV into its rectangle in the shared
+      // color atlas, using the same uvPosScl (offset.xy, scale.zw) uniform
+      // the live RawShaderMaterial uses to sample colorAtlasMap.
+      const uvps = obj.material && obj.material.uniforms && obj.material.uniforms.uvPosScl
+        ? obj.material.uniforms.uvPosScl.value
+        : null
+      const ox = uvps ? uvps.x : 0
+      const oy = uvps ? uvps.y : 0
+      const sx = uvps ? uvps.z : 1
+      const sy = uvps ? uvps.w : 1
+
       for (let i = 0; i < uv.count; i++) {
-        uvs.push(`vt ${uv.getX(i)} ${1 - uv.getY(i)}`)
+        const u = uv.getX(i) * sx + ox
+        const v = uv.getY(i) * sy + oy
+        uvs.push(`vt ${u} ${1 - v}`)
       }
     }
 
